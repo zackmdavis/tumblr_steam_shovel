@@ -15,6 +15,7 @@ use serde::Deserialize;
 struct Config {
     source_blog: String,
     source_tag: String,
+    tags_to_strip: Vec<String>,
     destination_blog: String,
     consumer_key: String,
     secret_key: String,
@@ -40,6 +41,9 @@ fn parse_config(filename: &str) -> Config {
         .unwrap().as_str().unwrap().to_owned();
     let source_tag = config_table.get("source_tag")
         .unwrap().as_str().unwrap().to_owned();
+    let tags_to_strip = config_table.get("tags_to_strip")
+        .unwrap().as_array().unwrap().iter()
+        .map(|t| t.as_str().unwrap().to_owned()).collect();
     let destination_blog = config_table.get("destination_blog")
         .unwrap().as_str().unwrap().to_owned();
     let consumer_key = config_table.get("consumer_key")
@@ -47,7 +51,7 @@ fn parse_config(filename: &str) -> Config {
     let secret_key = config_table.get("secret_key")
         .unwrap().as_str().unwrap().to_owned();
     Config {
-        source_blog, source_tag,
+        source_blog, source_tag, tags_to_strip,
         destination_blog, consumer_key, secret_key
     }
 }
@@ -71,8 +75,13 @@ fn request_posts(config: Config, offset: usize) -> Result<Vec<Post>, Box<Error>>
         .as_array().unwrap()
         .to_vec();
     Ok(post_data.iter()
-       .map(|p| { Post::deserialize(p).unwrap() })
-       .collect())
+       .map(|p| {
+           let mut post = Post::deserialize(p).unwrap();
+           let destination_tags = post.tags.into_iter()
+               .filter(|t| !config.tags_to_strip.contains(t)).collect();
+           post.tags = destination_tags;
+           post
+       }).collect())
 }
 
 
