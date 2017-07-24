@@ -1,5 +1,6 @@
 [tumblr_steam_shovel]
 source_blog = "source" # i.e., http://source.tumblr.com
+source_tag = "tagful"
 destination_blog = "dest" # http://dest.tumblr.com
 consumer_key = "oowooh3aochaiceiv9oojov8sha3quowaedoithohyooKahgie"
 secret_key = "shoo7ahRa8thahgeip3otiegh2Oz7aiGh2NahPhuov8baC3di5"
