@@ -1,0 +1,8 @@
+[package]
+name = "tumblr_steam_shovel"
+version = "0.0.1"
+authors = ["Zack M. Davis <code@zackmdavis.net>"]
+
+[dependencies]
+reqwest = "0.7.1"
+toml = "0.4"
